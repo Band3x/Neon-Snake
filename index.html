@@ -1014,17 +1014,17 @@
             // Food type selection: 15% special (gold), 40% cyan, 45% pink
             const rand = Math.random();
             let type = 'normal-cyan';
-            let color = 'var(--accent-green)';
+            let color = '#10b981';
 
             if (rand < 0.15) {
                 type = 'special';
-                color = 'var(--accent-gold)';
+                color = '#fbbf24';
             } else if (rand < 0.55) {
                 type = 'normal-cyan';
-                color = 'var(--accent-green)';
+                color = '#10b981';
             } else {
                 type = 'normal-pink';
-                color = 'var(--accent-green)';
+                color = '#10b981';
             }
 
             foods.push({ x: x, y: y, type: type, color: color });
@@ -1091,8 +1091,8 @@
         }
 
         function createExplosion(x, y, foodType) {
-            let color = 'var(--accent-green)';
-            if (foodType === 'special') color = 'var(--accent-gold)';
+            let color = '#10b981';
+            if (foodType === 'special') color = '#fbbf24';
 
             for (let i = 0; i < 15; i++) {
                 particles.push(new Particle(x, y, color));
@@ -1113,7 +1113,7 @@
             const headX = snake[0].x * CELL_SIZE + CELL_SIZE / 2;
             const headY = snake[0].y * CELL_SIZE + CELL_SIZE / 2;
             for (let i = 0; i < 25; i++) {
-                particles.push(new Particle(headX, headY, 'var(--accent-red)'));
+                particles.push(new Particle(headX, headY, '#f43f5e'));
             }
 
             gameoverDetails.textContent = `Puntuación final: ${score}`;
@@ -1192,10 +1192,10 @@
                 ctx.save();
 
                 if (isHead) {
-                    ctx.fillStyle = 'var(--accent-cyan)';
+                    ctx.fillStyle = '#06b6d4';
                     if (glowEnabled) {
                         ctx.shadowBlur = 20;
-                        ctx.shadowColor = 'var(--accent-cyan)';
+                        ctx.shadowColor = '#06b6d4';
                     }
 
                     // Shield shaped cyber-head
@@ -1262,10 +1262,10 @@
                 const radius = ((CELL_SIZE / 2) - 2) * 2;
 
                 if (f.type === 'special') {
-                    ctx.fillStyle = 'var(--accent-gold)';
+                    ctx.fillStyle = '#fbbf24';
                     if (glowEnabled) {
                         ctx.shadowBlur = 18;
-                        ctx.shadowColor = 'var(--accent-gold)';
+                        ctx.shadowColor = '#fbbf24';
                     }
 
                     const time = Date.now() * 0.006;
@@ -1283,7 +1283,7 @@
                     ctx.closePath();
                     ctx.fill();
                 } else {
-                    const color = 'var(--accent-green)';
+                    const color = '#10b981';
                     ctx.fillStyle = color;
                     if (glowEnabled) {
                         ctx.shadowBlur = 12;
