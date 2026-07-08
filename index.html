@@ -1137,6 +1137,10 @@
         }
 
         function draw() {
+            // Reset shadows globally at start of frame
+            ctx.shadowBlur = 0;
+            ctx.shadowColor = 'transparent';
+
             // Clear board
             ctx.fillStyle = '#090d16';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -1257,17 +1261,24 @@
             // Draw Foods
             foods.forEach(f => {
                 ctx.save();
+                // Ensure no shadow properties are carried over to the food
+                ctx.shadowBlur = 0;
+                ctx.shadowColor = 'transparent';
+
                 const foodX = f.x * CELL_SIZE + CELL_SIZE / 2;
                 const foodY = f.y * CELL_SIZE + CELL_SIZE / 2;
                 const radius = ((CELL_SIZE / 2) - 2) * 2;
 
                 if (f.type === 'special') {
-                    ctx.fillStyle = '#fbbf24';
+                    // Draw manual glow (semi-transparent gold circle)
                     if (glowEnabled) {
-                        ctx.shadowBlur = 18;
-                        ctx.shadowColor = '#fbbf24';
+                        ctx.fillStyle = 'rgba(251, 191, 36, 0.25)';
+                        ctx.beginPath();
+                        ctx.arc(foodX, foodY, radius * 1.3, 0, Math.PI * 2);
+                        ctx.fill();
                     }
 
+                    ctx.fillStyle = '#fbbf24';
                     const time = Date.now() * 0.006;
                     const sizeOffset = Math.sin(time) * 1.5;
                     const r = radius + sizeOffset;
@@ -1284,12 +1295,17 @@
                     ctx.fill();
                 } else {
                     const color = '#10b981';
-                    ctx.fillStyle = color;
+
+                    // Draw manual glow (semi-transparent green circle)
                     if (glowEnabled) {
-                        ctx.shadowBlur = 12;
-                        ctx.shadowColor = color;
+                        ctx.fillStyle = 'rgba(16, 185, 129, 0.25)';
+                        ctx.beginPath();
+                        ctx.arc(foodX, foodY, radius * 1.3, 0, Math.PI * 2);
+                        ctx.fill();
                     }
 
+                    // Draw main solid food
+                    ctx.fillStyle = color;
                     const time = Date.now() * 0.008;
                     const sizeOffset = Math.sin(time + (f.x * f.y)) * 0.8;
 
