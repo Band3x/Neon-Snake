@@ -928,7 +928,7 @@
             isPaused = false;
             isGameOver = false;
 
-            spawnFood(5);
+            spawnFood(1);
             resetTimer();
 
             // Web Audio trigger
@@ -964,7 +964,7 @@
             gameTimer = setInterval(update, gameLoopInterval);
         }
 
-        function spawnFood(count = 5) {
+        function spawnFood(count = 1) {
             const maxCells = GRID_SIZE * GRID_SIZE;
             const availableSpaces = maxCells - snake.length;
             const targetCount = Math.min(count, availableSpaces);
@@ -1083,7 +1083,7 @@
                 }
 
                 foods.splice(foodEatenIndex, 1);
-                spawnFood(5);
+                spawnFood(1);
             } else {
                 // Remove tail if didn't eat
                 snake.pop();
