@@ -928,7 +928,7 @@
             isPaused = false;
             isGameOver = false;
 
-            spawnFood(3);
+            spawnFood(5);
             resetTimer();
 
             // Web Audio trigger
@@ -964,38 +964,70 @@
             gameTimer = setInterval(update, gameLoopInterval);
         }
 
-        function spawnFood(count = 3) {
-            while (foods.length < count) {
-                const randX = Math.floor(Math.random() * GRID_SIZE);
-                const randY = Math.floor(Math.random() * GRID_SIZE);
+        function spawnFood(count = 5) {
+            const maxCells = GRID_SIZE * GRID_SIZE;
+            const availableSpaces = maxCells - snake.length;
+            const targetCount = Math.min(count, availableSpaces);
 
-                // Verify cell is not occupied by the snake
-                const inSnake = snake.some(segment => segment.x === randX && segment.y === randY);
-                // Verify cell is not occupied by other food
-                const inFoods = foods.some(f => f.x === randX && f.y === randY);
+            while (foods.length < targetCount) {
+                let found = false;
+                
+                // Intento aleatorio rápido (muy eficiente si el tablero no está lleno)
+                for (let attempt = 0; attempt < 100; attempt++) {
+                    const randX = Math.floor(Math.random() * GRID_SIZE);
+                    const randY = Math.floor(Math.random() * GRID_SIZE);
 
-                if (inSnake || inFoods) {
-                    continue;
+                    const inSnake = snake.some(segment => segment.x === randX && segment.y === randY);
+                    const inFoods = foods.some(f => f.x === randX && f.y === randY);
+
+                    if (!inSnake && !inFoods) {
+                        addFoodAt(randX, randY);
+                        found = true;
+                        break;
+                    }
                 }
 
-                // Food type selection: 15% special (gold), 40% cyan, 45% pink
-                const rand = Math.random();
-                let type = 'normal-cyan';
-                let color = 'var(--accent-cyan)';
+                // Si falla la búsqueda aleatoria, buscamos secuencialmente los espacios vacíos
+                if (!found) {
+                    const emptyCells = [];
+                    for (let x = 0; x < GRID_SIZE; x++) {
+                        for (let y = 0; y < GRID_SIZE; y++) {
+                            const inSnake = snake.some(segment => segment.x === x && segment.y === y);
+                            const inFoods = foods.some(f => f.x === x && f.y === y);
+                            if (!inSnake && !inFoods) {
+                                emptyCells.push({ x, y });
+                            }
+                        }
+                    }
 
-                if (rand < 0.15) {
-                    type = 'special';
-                    color = 'var(--accent-gold)';
-                } else if (rand < 0.55) {
-                    type = 'normal-cyan';
-                    color = 'var(--accent-cyan)';
-                } else {
-                    type = 'normal-pink';
-                    color = 'var(--accent-red)';
+                    if (emptyCells.length > 0) {
+                        const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+                        addFoodAt(randomCell.x, randomCell.y);
+                    } else {
+                        break; // No hay más espacios disponibles
+                    }
                 }
-
-                foods.push({ x: randX, y: randY, type: type, color: color });
             }
+        }
+
+        function addFoodAt(x, y) {
+            // Food type selection: 15% special (gold), 40% cyan, 45% pink
+            const rand = Math.random();
+            let type = 'normal-cyan';
+            let color = 'var(--accent-cyan)';
+
+            if (rand < 0.15) {
+                type = 'special';
+                color = 'var(--accent-gold)';
+            } else if (rand < 0.55) {
+                type = 'normal-cyan';
+                color = 'var(--accent-cyan)';
+            } else {
+                type = 'normal-pink';
+                color = 'var(--accent-red)';
+            }
+
+            foods.push({ x: x, y: y, type: type, color: color });
         }
 
         // Logic update tick
@@ -1051,7 +1083,7 @@
                 }
 
                 foods.splice(foodEatenIndex, 1);
-                spawnFood(3);
+                spawnFood(5);
             } else {
                 // Remove tail if didn't eat
                 snake.pop();
