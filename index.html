@@ -790,6 +790,7 @@
         let particles = [];
         let glowEnabled = true;
         let gridEnabled = true;
+        let pulseTime = 0;
 
         // Difficulty Speed Mapping (milliseconds per tick)
         const SPEED_MAP = {
@@ -1137,6 +1138,9 @@
         }
 
         function draw() {
+            // Update animation pulse time safely (avoids Float32 precision loss in Math.sin/cos)
+            pulseTime = (pulseTime + 0.05) % 1000;
+
             // Reset shadows globally at start of frame
             ctx.shadowBlur = 0;
             ctx.shadowColor = 'transparent';
@@ -1279,7 +1283,7 @@
                     }
 
                     ctx.fillStyle = '#fbbf24';
-                    const time = Date.now() * 0.006;
+                    const time = pulseTime * 1.2;
                     const sizeOffset = Math.sin(time) * 1.5;
                     const r = radius + sizeOffset;
 
@@ -1306,7 +1310,7 @@
 
                     // Draw main solid food
                     ctx.fillStyle = color;
-                    const time = Date.now() * 0.008;
+                    const time = pulseTime * 1.6;
                     const sizeOffset = Math.sin(time + (f.x * f.y)) * 0.8;
 
                     ctx.beginPath();
